@@ -1,7 +1,8 @@
-A template Rust project with fully functional and no-frills Nix support, as well as builtin VSCode configuration to get IDE experience without any manual setup (just [install direnv](https://nixos.asia/en/direnv), open in VSCode and accept the suggestions). It uses [crane](https://crane.dev/), via [rust-flake](https://github.com/juspay/rust-flake).
+# `[alloy-mev-relay-watch]`
 
 > [!NOTE]
-> If you are looking for the original template based on [this blog post](https://srid.ca/rust-nix)'s use of `crate2nix`, browse from [this tag](https://github.com/srid/rust-nix-template/tree/crate2nix). The evolution of this template can be gleaned from [releases](https://github.com/srid/rust-nix-template/releases).
+> Work in Progress 
+
 
 ## Adapting this template
 
