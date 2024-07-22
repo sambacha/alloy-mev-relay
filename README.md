@@ -28,10 +28,6 @@ nix build
 
 We also provide a [`justfile`](https://just.systems/) for Makefile'esque commands to be run inside of the devShell.
 
-## Discussion
-
-- [Zulip](https://nixos.zulipchat.com/#narrow/stream/413950-nix)
-
 ## See Also
 
 - [nixos.wiki: Packaging Rust projects with nix](https://wiki.nixos.org/wiki/Rust#Packaging_Rust_projects_with_nix)

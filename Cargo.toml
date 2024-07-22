@@ -1,11 +1,20 @@
 [package]
-authors = ["Sridhar Ratnakumar <srid@srid.ca>"]
+authors = ["blockrotator"]
 edition = "2021"
 # If you change the name here, you must also do it in flake.nix (and run `cargo generate-lockfile` afterwards)
-name = "rust-nix-template"
-version = "0.1.0"
+name = "alloy-mev-auction-middleware"
+version = "0.0.1"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 clap = { version = "4.3.14", features = ["derive"] }
+reqwest = { version = "0.12.5", features = ["json", "stream"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+ethers = { version = "2.0.11", features = ["ws"] }
+ethers-primitive-types-rs = "0.12.1"
+futures = "0.3.29"
+tokio-stream = "0.1.14"
+alloy = "0.2.0"

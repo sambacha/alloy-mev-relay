@@ -2,21 +2,35 @@ use alloy_rs::prelude::*;
 use block_bid_watcher::relay_clients::RelayClients;
 use std::error::Error;
 
+use alloy_rs::prelude::*;
+use block_bid_watcher::relay_clients::RelayClients;
+use serde::Deserialize;
 #[tokio::main]
+use std::error::Error;
+use tokio::fs::File;
+use tokio::io::AsyncReadExt;
 
-// TODO
-// Extract into seperate configuration file
-// Support Optimistic Relay vs Normal Relay vs XGA Relay
+#[derive(Deserialize)]
+struct Config {
+    relay_urls: Vec<String>,
+    provider_url: String,
+}
+
+async fn load_config() -> Result<Config, Box<dyn Error>> {
+    let mut file = File::open("config.json").await?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).await?;
+    let config: Config = serde_json::from_str(&contents)?;
+    Ok(config)
+}
+
+#[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    // Load configuration
+    let config = load_config().await?;
+
     // Initialize RelayClients with URLs
-    let mut relay_clients = RelayClients::new(vec![
-        "https://relay.ultrasound.money".to_string(),
-        "https://agnostic-relay.net".to_string(),
-        "https://boost-relay.flashbots.net".to_string(),
-        "https://bloxroute.max-profit.blxrbdn.com".to_string(),
-        "https://mainnet.aestus.live".to_string(),
-        "https://titanrelay.xyz".to_string(),
-    ]);
+    let mut relay_clients = RelayClients::new(config.relay_urls);
 
     let mut bid_manager_receiver = relay_clients.bid_manager.subscribe_to_top_bids().await?;
 
@@ -28,10 +42,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     });
 
     // Connect to the WebSocket provider
-    // Hardcoded for meow
-    let provider =
-        AlloyProvider::connect("wss://mainnet.infura.io/ws/v3/97498194812e457a9305b7ac71dd724b")
-            .await?;
+    let provider = AlloyProvider::connect(&config.provider_url).await?;
 
     // Subscribe to new blocks
     let mut block_stream = provider.subscribe_blocks().await?;

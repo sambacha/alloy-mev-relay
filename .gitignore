@@ -30,6 +30,7 @@ _dev/
 coverage/
 /dist
 /build
+/target 
 
 ## Nix/Direnv ##
 .env
