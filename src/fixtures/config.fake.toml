@@ -1,0 +1,17 @@
+# Fake config file for testing
+# config.fake.toml
+# vim: ft=toml
+
+[comm]
+db_dir = "./db/"
+cache_dir = "./cache"
+output_dir = "./test"
+
+[rpc]
+eth_rpc_url = "https://<RPC_URL>/"
+
+[relays]
+relay_urls = "https://bloxroute.max-profit.blxrbdn.com"
+
+[pubblickey]
+public_keys = []

@@ -1,6 +1,9 @@
-use alloy_rs::prelude::*;
+//use alloy_rs::prelude::*;
 use block_bid_watcher::relay_clients::RelayClients;
 use std::error::Error;
+use alloy::providers::{Provider, ProviderBuilder, WsConnect};
+use eyre::Result;
+use futures_util::StreamExt;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -23,10 +26,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
     });
 
-    // Connect to the WebSocket provider
-    let provider =
-        AlloyProvider::connect("wss://mainnet.infura.io/ws/v3/97498194812e457a9305b7ac71dd724b")
-            .await?;
+    let rpc_url = "wss://mainnet.infura.io/ws/v3/97498194812e457a9305b7ac71dd724b";
+    // Create the provider.
+    let ws = WsConnect::new(rpc_url); 
+    let provider = ProviderBuilder::new().on_ws(ws).await?;
+
 
     // Subscribe to new blocks
     let mut block_stream = provider.subscribe_blocks().await?;
