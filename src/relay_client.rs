@@ -1,7 +1,10 @@
 //use alloy_rs::prelude::*;
-use block_bid_watcher::relay_clients::RelayClients;
-use std::error::Error;
+use crate::relay_clients::RelayClients;use std::error::Error;
 use alloy::providers::{Provider, ProviderBuilder, WsConnect};
+use alloy::{ 
+    network::{AnyNetwork, EthereumWallet},
+    primitives::{address, Address, U128, U256, U64},
+};
 use eyre::Result;
 use futures_util::StreamExt;
 
@@ -17,7 +20,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         "https://titanrelay.xyz".to_string(),
     ]);
 
-    let mut bid_manager_receiver = relay_clients.bid_manager.subscribe_to_top_bids().await?;
+    let mut bid_manager_receiver = relay_clients.bid_manager.subscribe_to_top_bids().await;
 
     // Spawn a task to handle received messages from the bid manager
     tokio::spawn(async move {
@@ -31,20 +34,26 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let ws = WsConnect::new(rpc_url); 
     let provider = ProviderBuilder::new().on_ws(ws).await?;
 
-
     // Subscribe to new blocks
-    let mut block_stream = provider.subscribe_blocks().await?;
+//    
+    // Subscribe to blocks.
+  //  let mut stream = provider.subscribe_blocks().await?;
+  let sub = provider.subscribe_blocks().await?;
 
-    // Process new blocks as they come in
-    while let Some(block) = block_stream.next().await {
-        let block_number = block.number.expect("Block number not found in new block");
-        println!("New block: {}", block_number);
+  let mut stream = sub.into_stream().take(4);
 
-        // Poll for each new block
-        relay_clients
-            .poll_for(block_number + U64::one(), 1, 12)
-            .await
-    }
+  println!("Awaiting blocks...");
+    // Take the stream and print the block number upon receiving a new block.
+    let handle = tokio::spawn(async move {
+        while let Some(block) = stream.next().await {
+            println!(
+                "Latest block number: {}",
+                block.header.number.expect("Failed to get block number")
+            );
+        }
+    });
+
+    handle.await?;
 
     Ok(())
 }
