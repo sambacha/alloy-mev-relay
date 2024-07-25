@@ -1,5 +1,5 @@
 use std::{sync::Arc, time::Duration};
-use alloy_rs::types::U64;
+use alloy_rs::types::{Address, U256, U64};
 use tokio::{select, time};
 
 use crate::{bid_manager::BidManager, relay_client::RelayClient};
